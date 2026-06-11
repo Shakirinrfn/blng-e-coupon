@@ -521,11 +521,11 @@ canvas{
   position:relative;
   top:auto;
   z-index:10;
-  padding:calc(58px + env(safe-area-inset-top)) 14px 22px;
+  padding:calc(56px + env(safe-area-inset-top)) 14px 22px;
   margin-top:calc(env(safe-area-inset-top) * -1);
   border-radius:0 0 24px 24px;
   gap:20px;
-  min-height:285px;
+  min-height:275px;
   justify-content:flex-end;
 }
 
