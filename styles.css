@@ -525,7 +525,7 @@ canvas{
   margin-top:calc(env(safe-area-inset-top) * -1);
   border-radius:0 0 24px 24px;
   gap:18px;
-  min-height:235px;
+  min-height:295px;
 }
 
   .brand{
