@@ -614,3 +614,43 @@ canvas{
     width:100%;
   }
 }
+
+.chart-legend{
+  display:grid;
+  gap:10px;
+  margin-bottom:22px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  border-radius:14px;
+  background:#f7faf8;
+  border:1px solid var(--line);
+}
+
+.legend-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.legend-dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+}
+
+.legend-label{
+  font-size:14px;
+  font-weight:800;
+  color:var(--ink);
+}
+
+.legend-value{
+  font-size:14px;
+  font-weight:900;
+  color:var(--blng-dark);
+}
