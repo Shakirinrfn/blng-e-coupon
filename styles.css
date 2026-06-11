@@ -69,14 +69,14 @@ select{
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.16);
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
 }
 
-.brand-mark span{
-  color:var(--blng-green);
-  font-size:18px;
-  font-weight:950;
-  letter-spacing:.08em;
+.brand-mark img{
+  width:80%;
+  height:80%;
+  object-fit:contain;
 }
 
 .brand h1{
