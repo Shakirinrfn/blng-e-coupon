@@ -24,6 +24,7 @@ const annualSpent = document.getElementById("annualSpent");
 const annualWasted = document.getElementById("annualWasted");
 
 const pieChart = document.getElementById("pieChart");
+const chartLegend = document.getElementById("chartLegend");
 const trendChart = document.getElementById("trendChart");
 
 const navButtons = document.querySelectorAll(".nav-btn");
@@ -227,40 +228,82 @@ function drawPieChart(entries){
     totals[entry.category] = (totals[entry.category] || 0) + entry.amount;
   });
 
-  const values = Object.values(totals);
   const labels = Object.keys(totals);
+  const values = Object.values(totals);
   const total = values.reduce((sum, value) => sum + value, 0);
 
-  ctx.font = "13px Inter, system-ui";
+  const colors = ["#007a3d", "#f5b700", "#d71920", "#004626"];
+
+  chartLegend.innerHTML = "";
 
   if(total === 0){
+    chartLegend.innerHTML = `
+      <div class="legend-empty">No category data yet</div>
+    `;
+
     ctx.fillStyle = "#68756e";
-    ctx.fillText("No category data yet", 90, 150);
+    ctx.font = "14px Inter, system-ui";
+    ctx.textAlign = "center";
+    ctx.fillText("No chart data", pieChart.width / 2, pieChart.height / 2);
+    ctx.textAlign = "left";
     return;
   }
 
-  const colors = ["#007a3d", "#f5b700", "#d71920", "#004626"];
-  let start = 0;
+  labels.forEach((label, index) => {
+    const percent = Math.round((values[index] / total) * 100);
+
+    chartLegend.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-left">
+          <span class="legend-dot" style="background:${colors[index % colors.length]}"></span>
+          <span class="legend-label">${label}</span>
+        </div>
+
+        <div class="legend-right">
+          <strong>${formatMoney(values[index])}</strong>
+          <span>${percent}%</span>
+        </div>
+      </div>
+    `;
+  });
+
+  let start = -Math.PI / 2;
+  const centerX = pieChart.width / 2;
+  const centerY = pieChart.height / 2;
+  const radius = 108;
 
   values.forEach((value, index) => {
     const slice = (value / total) * Math.PI * 2;
 
     ctx.beginPath();
-    ctx.moveTo(150, 150);
-    ctx.arc(150, 150, 108, start, start + slice);
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, start, start + slice);
+    ctx.closePath();
     ctx.fillStyle = colors[index % colors.length];
     ctx.fill();
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
     start += slice;
   });
 
-  labels.forEach((label, index) => {
-    ctx.fillStyle = colors[index % colors.length];
-    ctx.fillRect(18, 18 + index * 24, 12, 12);
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 58, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
 
-    ctx.fillStyle = "#102018";
-    ctx.fillText(`${label}: ${formatMoney(values[index])}`, 38, 29 + index * 24);
-  });
+  ctx.fillStyle = "#102018";
+  ctx.font = "900 18px Inter, system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText("Total", centerX, centerY - 4);
+
+  ctx.fillStyle = "#68756e";
+  ctx.font = "800 15px Inter, system-ui";
+  ctx.fillText(formatMoney(total), centerX, centerY + 20);
+
+  ctx.textAlign = "left";
 }
 
 function drawTrendChart(months){
