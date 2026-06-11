@@ -1,6 +1,5 @@
 const MONTHLY_ALLOWANCE = 63;
 const STORAGE_KEY = "blngECouponData";
-const THEME_KEY = "blngECouponTheme";
 
 const monthTitle = document.getElementById("monthTitle");
 const totalSpent = document.getElementById("totalSpent");
@@ -8,19 +7,22 @@ const balanceLeft = document.getElementById("balanceLeft");
 const usagePercent = document.getElementById("usagePercent");
 const usageRing = document.getElementById("usageRing");
 const projectedWaste = document.getElementById("projectedWaste");
+
 const spendingForm = document.getElementById("spendingForm");
 const itemName = document.getElementById("itemName");
 const category = document.getElementById("category");
 const amount = document.getElementById("amount");
+
 const transactionList = document.getElementById("transactionList");
 const historyList = document.getElementById("historyList");
 const searchInput = document.getElementById("searchInput");
-const clearAllBtn = document.getElementById("clearAllBtn");
+
 const exportCsvBtn = document.getElementById("exportCsvBtn");
 const printBtn = document.getElementById("printBtn");
-const themeToggle = document.getElementById("themeToggle");
-const annualSummary = document.getElementById("annualSummary");
+const clearDashboardBtn = document.getElementById("clearDashboardBtn");
+const clearAnalyticsBtn = document.getElementById("clearAnalyticsBtn");
 
+const annualSummary = document.getElementById("annualSummary");
 const pieChart = document.getElementById("pieChart");
 const trendChart = document.getElementById("trendChart");
 
@@ -35,6 +37,7 @@ function getCurrentMonthKey(){
 function formatMonth(monthKey){
   const [year, month] = monthKey.split("-");
   const date = new Date(Number(year), Number(month) - 1);
+
   return date.toLocaleDateString("en-US", {
     month:"long",
     year:"numeric"
@@ -63,6 +66,7 @@ function ensureCurrentMonth(){
       allowance:MONTHLY_ALLOWANCE,
       entries:[]
     };
+
     saveData(data);
   }
 
@@ -76,7 +80,13 @@ function calculateMonth(monthData){
   const overspent = Math.max(spent - monthData.allowance, 0);
   const usage = Math.min((spent / monthData.allowance) * 100, 100);
 
-  return { spent, balance, wasted, overspent, usage };
+  return {
+    spent,
+    balance,
+    wasted,
+    overspent,
+    usage
+  };
 }
 
 function getProjectedWaste(monthData){
@@ -84,6 +94,10 @@ function getProjectedWaste(monthData){
   const today = now.getDate();
   const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   const stats = calculateMonth(monthData);
+
+  if(today === 0 || stats.spent === 0){
+    return "No spending recorded yet for this month.";
+  }
 
   const dailyAverage = stats.spent / today;
   const projectedSpent = dailyAverage * totalDays;
@@ -109,7 +123,7 @@ function renderDashboard(){
   usageRing.style.background = `conic-gradient(var(--blng-green) ${stats.usage * 3.6}deg, #e8f1ec 0deg)`;
   projectedWaste.textContent = getProjectedWaste(monthData);
 
-  balanceLeft.style.color = stats.balance < 0 ? "var(--red)" : "";
+  balanceLeft.style.color = stats.balance < 0 ? "var(--red)" : "var(--blng-dark)";
 
   renderTransactions();
 }
@@ -130,7 +144,7 @@ function renderTransactions(){
   transactionList.innerHTML = "";
 
   if(filtered.length === 0){
-    transactionList.innerHTML = `<div class="empty-state">No spending records found.</div>`;
+    transactionList.innerHTML = `<div class="empty-state">No spending records found for this month.</div>`;
     return;
   }
 
@@ -139,14 +153,14 @@ function renderTransactions(){
     item.className = "transaction-item";
 
     item.innerHTML = `
+      <button class="delete-btn" data-id="${entry.id}" aria-label="Delete spending">×</button>
+
       <div class="transaction-info">
         <strong>${entry.name}</strong>
         <span>${entry.category} • ${entry.date}</span>
       </div>
 
       <div class="amount-tag">${formatMoney(entry.amount)}</div>
-
-      <button class="delete-btn" data-id="${entry.id}">Delete</button>
     `;
 
     transactionList.appendChild(item);
@@ -155,9 +169,19 @@ function renderTransactions(){
 
 function renderHistory(){
   const data = ensureCurrentMonth();
-  const monthKeys = Object.keys(data.months).sort().reverse();
+  const currentMonth = getCurrentMonthKey();
+
+  const monthKeys = Object.keys(data.months)
+    .filter(monthKey => monthKey !== currentMonth)
+    .sort()
+    .reverse();
 
   historyList.innerHTML = "";
+
+  if(monthKeys.length === 0){
+    historyList.innerHTML = `<div class="empty-state">No past month history yet.</div>`;
+    return;
+  }
 
   monthKeys.forEach(monthKey => {
     const monthData = data.months[monthKey];
@@ -207,12 +231,15 @@ function drawPieChart(entries){
   const labels = Object.keys(totals);
   const total = values.reduce((sum, value) => sum + value, 0);
 
+  ctx.font = "13px Inter, system-ui";
+
   if(total === 0){
-    ctx.fillText("No data yet", 110, 150);
+    ctx.fillStyle = "#68756e";
+    ctx.fillText("No category data yet", 90, 150);
     return;
   }
 
-  const colors = ["#007a3d", "#f5b700", "#d71920", "#004626", "#7fbf8f"];
+  const colors = ["#007a3d", "#f5b700", "#d71920", "#004626"];
   let start = 0;
 
   values.forEach((value, index) => {
@@ -220,7 +247,7 @@ function drawPieChart(entries){
 
     ctx.beginPath();
     ctx.moveTo(150, 150);
-    ctx.arc(150, 150, 110, start, start + slice);
+    ctx.arc(150, 150, 108, start, start + slice);
     ctx.fillStyle = colors[index % colors.length];
     ctx.fill();
 
@@ -230,7 +257,8 @@ function drawPieChart(entries){
   labels.forEach((label, index) => {
     ctx.fillStyle = colors[index % colors.length];
     ctx.fillRect(18, 18 + index * 24, 12, 12);
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue("--ink");
+
+    ctx.fillStyle = "#102018";
     ctx.fillText(`${label}: ${formatMoney(values[index])}`, 38, 29 + index * 24);
   });
 }
@@ -241,8 +269,11 @@ function drawTrendChart(months){
 
   const keys = Object.keys(months).sort().slice(-12);
 
+  ctx.font = "13px Inter, system-ui";
+
   if(keys.length === 0){
-    ctx.fillText("No data yet", 250, 150);
+    ctx.fillStyle = "#68756e";
+    ctx.fillText("No monthly trend yet", 230, 150);
     return;
   }
 
@@ -265,8 +296,8 @@ function drawTrendChart(months){
     ctx.fillStyle = "#007a3d";
     ctx.fillRect(x, y, barWidth, height);
 
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue("--ink");
-    ctx.fillText(keys[index].slice(5), x + 3, 270);
+    ctx.fillStyle = "#102018";
+    ctx.fillText(keys[index].slice(5), x + 4, 270);
   });
 }
 
@@ -287,6 +318,35 @@ function renderAnnualSummary(months){
   annualSummary.textContent = `This year spent: ${formatMoney(spent)} • Wasted balance: ${formatMoney(wasted)}`;
 }
 
+function clearAllDataWithDoubleConfirmation(){
+  const firstConfirm = confirm("Are you sure you want to clear all BLNG e-Coupon data?");
+  if(!firstConfirm) return;
+
+  const secondConfirm = confirm("This will permanently remove all spending records and history from this browser. Continue?");
+  if(!secondConfirm) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  renderAll();
+}
+
+function deleteEntryWithDoubleConfirmation(id){
+  const firstConfirm = confirm("Delete this spending record?");
+  if(!firstConfirm) return;
+
+  const secondConfirm = confirm("This action cannot be undone. Confirm delete?");
+  if(!secondConfirm) return;
+
+  const data = loadData();
+  const currentMonth = getCurrentMonthKey();
+
+  if(!data.months[currentMonth]) return;
+
+  data.months[currentMonth].entries = data.months[currentMonth].entries.filter(entry => entry.id !== id);
+
+  saveData(data);
+  renderAll();
+}
+
 spendingForm.addEventListener("submit", event => {
   event.preventDefault();
 
@@ -295,7 +355,7 @@ spendingForm.addEventListener("submit", event => {
 
   const newEntry = {
     id:crypto.randomUUID(),
-    name:itemName.value.trim(),
+    name:itemName.value,
     category:category.value,
     amount:Number(amount.value),
     date:new Date().toLocaleDateString("en-GB", {
@@ -308,7 +368,7 @@ spendingForm.addEventListener("submit", event => {
   data.months[currentMonth].entries.push(newEntry);
   saveData(data);
 
-  spendingForm.reset();
+  amount.value = "";
   renderAll();
 });
 
@@ -316,24 +376,13 @@ transactionList.addEventListener("click", event => {
   if(!event.target.classList.contains("delete-btn")) return;
 
   const id = event.target.dataset.id;
-  const data = loadData();
-  const currentMonth = getCurrentMonthKey();
-
-  data.months[currentMonth].entries = data.months[currentMonth].entries.filter(entry => entry.id !== id);
-
-  saveData(data);
-  renderAll();
+  deleteEntryWithDoubleConfirmation(id);
 });
 
 searchInput.addEventListener("input", renderTransactions);
 
-clearAllBtn.addEventListener("click", () => {
-  const confirmed = confirm("Clear all BLNG e-Coupon data?");
-  if(!confirmed) return;
-
-  localStorage.removeItem(STORAGE_KEY);
-  renderAll();
-});
+clearDashboardBtn.addEventListener("click", clearAllDataWithDoubleConfirmation);
+clearAnalyticsBtn.addEventListener("click", clearAllDataWithDoubleConfirmation);
 
 exportCsvBtn.addEventListener("click", () => {
   const data = ensureCurrentMonth();
@@ -360,16 +409,6 @@ printBtn.addEventListener("click", () => {
   window.print();
 });
 
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-
-  localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-  themeToggle.textContent = isDark ? "Light Mode" : "Dark Mode";
-
-  renderAnalytics();
-});
-
 navButtons.forEach(button => {
   button.addEventListener("click", () => {
     navButtons.forEach(btn => btn.classList.remove("active"));
@@ -382,20 +421,10 @@ navButtons.forEach(button => {
   });
 });
 
-function applySavedTheme(){
-  const savedTheme = localStorage.getItem(THEME_KEY);
-
-  if(savedTheme === "dark"){
-    document.body.classList.add("dark");
-    themeToggle.textContent = "Light Mode";
-  }
-}
-
 function renderAll(){
   renderDashboard();
   renderHistory();
   renderAnalytics();
 }
 
-applySavedTheme();
 renderAll();
