@@ -17,8 +17,6 @@ const transactionList = document.getElementById("transactionList");
 const historyList = document.getElementById("historyList");
 const searchInput = document.getElementById("searchInput");
 
-const exportCsvBtn = document.getElementById("exportCsvBtn");
-const printBtn = document.getElementById("printBtn");
 const clearDashboardBtn = document.getElementById("clearDashboardBtn");
 const clearAnalyticsBtn = document.getElementById("clearAnalyticsBtn");
 
@@ -95,7 +93,7 @@ function getProjectedWaste(monthData){
   const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   const stats = calculateMonth(monthData);
 
-  if(today === 0 || stats.spent === 0){
+  if(stats.spent === 0){
     return "No spending recorded yet for this month.";
   }
 
@@ -383,31 +381,6 @@ searchInput.addEventListener("input", renderTransactions);
 
 clearDashboardBtn.addEventListener("click", clearAllDataWithDoubleConfirmation);
 clearAnalyticsBtn.addEventListener("click", clearAllDataWithDoubleConfirmation);
-
-exportCsvBtn.addEventListener("click", () => {
-  const data = ensureCurrentMonth();
-  let csv = "Month,Date,Category,Description,Amount\n";
-
-  Object.keys(data.months).forEach(monthKey => {
-    data.months[monthKey].entries.forEach(entry => {
-      csv += `${formatMonth(monthKey)},${entry.date},${entry.category},${entry.name},${entry.amount}\n`;
-    });
-  });
-
-  const blob = new Blob([csv], { type:"text/csv" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "BLNG-eCoupon-Report.csv";
-  link.click();
-
-  URL.revokeObjectURL(url);
-});
-
-printBtn.addEventListener("click", () => {
-  window.print();
-});
 
 navButtons.forEach(button => {
   button.addEventListener("click", () => {
