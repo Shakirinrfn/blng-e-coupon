@@ -521,11 +521,11 @@ canvas{
   position:relative;
   top:auto;
   z-index:10;
-  padding:calc(34px + env(safe-area-inset-top)) 14px 18px;
+  padding:calc(42px + env(safe-area-inset-top)) 14px 22px;
   margin-top:calc(env(safe-area-inset-top) * -1);
   border-radius:0 0 24px 24px;
-  gap:16px;
-  min-height:205px;
+  gap:18px;
+  min-height:235px;
 }
 
   .brand{
