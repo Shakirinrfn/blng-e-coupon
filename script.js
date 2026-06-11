@@ -20,7 +20,9 @@ const searchInput = document.getElementById("searchInput");
 const clearDashboardBtn = document.getElementById("clearDashboardBtn");
 const clearAnalyticsBtn = document.getElementById("clearAnalyticsBtn");
 
-const annualSummary = document.getElementById("annualSummary");
+const annualSpent = document.getElementById("annualSpent");
+const annualWasted = document.getElementById("annualWasted");
+
 const pieChart = document.getElementById("pieChart");
 const trendChart = document.getElementById("trendChart");
 
@@ -313,7 +315,8 @@ function renderAnnualSummary(months){
     }
   });
 
-  annualSummary.textContent = `This year spent: ${formatMoney(spent)} • Wasted balance: ${formatMoney(wasted)}`;
+  annualSpent.textContent = formatMoney(spent);
+  annualWasted.textContent = formatMoney(wasted);
 }
 
 function clearAllDataWithDoubleConfirmation(){
