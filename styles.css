@@ -258,10 +258,16 @@ button{
 }
 
 .input-card h3,
-.chart-card h3,
 .annual-card h3{
   margin:0;
   font-size:22px;
+}
+
+.chart-card h3{
+  margin:0;
+  font-size:22px;
+  font-weight:900;
+  line-height:1.1;
 }
 
 form{
@@ -618,15 +624,16 @@ canvas{
 .chart-legend{
   display:grid;
   gap:10px;
-  margin-bottom:22px;
+  margin-top:18px;
+  margin-bottom:20px;
 }
 
 .legend-item{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:12px 14px;
-  border-radius:14px;
+  padding:10px 14px;
+  border-radius:16px;
   background:#f7faf8;
   border:1px solid var(--line);
 }
