@@ -425,21 +425,24 @@ canvas{
     border-radius:0 0 24px 24px;
   }
 
-  .brand-mark{
-    width:64px;
-    height:46px;
-    flex-basis:64px;
-    border-radius:12px;
-    padding:7px 9px;
-  }
+  .brand{
+  grid-template-columns:86px 1fr;
+}
 
-  .brand h1{
-    font-size:18px;
-  }
+.brand-logo-card{
+  width:86px;
+  height:50px;
+  border-radius:14px;
+  padding:7px 10px;
+}
 
-  .brand p{
-    font-size:12px;
-  }
+.brand-text h1{
+  font-size:18px;
+}
+
+.brand-text p{
+  font-size:12px;
+}
 
   .side-nav{
     grid-template-columns:repeat(3,1fr);
