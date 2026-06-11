@@ -11,23 +11,21 @@
   <main class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-  <div class="brand-logo-card">
-    <img src="blng-logo.png" alt="BLNG Logo">
-  </div>
+        <div class="brand-logo-card">
+          <img src="blng-logo.png" alt="BLNG Logo">
+        </div>
 
-  <div class="brand-text">
-    <h1>BLNG e-Coupon</h1>
-    <p>Monthly Coupon Management</p>
-  </div>
-</div>
+        <div class="brand-text">
+          <h1>BLNG e-Coupon</h1>
+          <p>Monthly Coupon Management</p>
+        </div>
+      </div>
 
       <nav class="side-nav">
         <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
         <button class="nav-btn" data-tab="history">History</button>
         <button class="nav-btn" data-tab="analytics">Analytics</button>
       </nav>
-
-      <button class="theme-toggle" id="themeToggle">Dark Mode</button>
     </aside>
 
     <section class="main-panel">
@@ -35,12 +33,6 @@
         <div>
           <p class="eyebrow">BLNG e-Coupon</p>
           <h2 id="monthTitle">Current Month</h2>
-        </div>
-
-        <div class="top-actions">
-          <button id="exportCsvBtn">Export Excel</button>
-          <button id="printBtn">PDF Report</button>
-          <button class="danger-btn" id="clearAllBtn">Clear Data</button>
         </div>
       </header>
 
@@ -76,7 +68,10 @@
           <form id="spendingForm">
             <div class="field">
               <label for="itemName">Item / Description</label>
-              <input type="text" id="itemName" placeholder="Example: Lunch, drinks, snack" required />
+              <select id="itemName" required>
+                <option value="Seri Kandi">Seri Kandi</option>
+                <option value="Coffee Bean">Coffee Bean</option>
+              </select>
             </div>
 
             <div class="field">
@@ -84,18 +79,20 @@
               <select id="category" required>
                 <option value="Breakfast">Breakfast</option>
                 <option value="Lunch">Lunch</option>
-                <option value="Drinks">Drinks</option>
+                <option value="Hi Tea">Hi Tea</option>
                 <option value="Snacks">Snacks</option>
-                <option value="Others">Others</option>
               </select>
             </div>
 
             <div class="field">
               <label for="amount">Amount</label>
-              <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required />
+              <div class="money-field">
+                <span>$</span>
+                <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required />
+              </div>
             </div>
 
-            <button type="submit">Add Spending</button>
+            <button type="submit" class="primary-btn">Add Spending</button>
           </form>
         </section>
 
@@ -107,6 +104,12 @@
 
           <div class="transaction-list" id="transactionList"></div>
         </section>
+
+        <div class="page-actions">
+          <button id="exportCsvBtn" class="action-btn">Export Excel</button>
+          <button id="printBtn" class="action-btn">PDF Report</button>
+          <button id="clearDashboardBtn" class="action-btn danger-action">Clear Data</button>
+        </div>
       </section>
 
       <section class="tab-content" id="history">
@@ -139,6 +142,10 @@
             <span id="annualSummary">No data yet</span>
           </div>
         </section>
+
+        <div class="page-actions">
+          <button id="clearAnalyticsBtn" class="action-btn danger-action">Clear Data</button>
+        </div>
       </section>
     </section>
   </main>
