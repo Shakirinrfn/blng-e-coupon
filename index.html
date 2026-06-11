@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BLNG e-Coupon</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+         <img src="blng-logo.png" alt="BLNG Logo">
+        </div>
+        <div>
+          <h1>BLNG e-Coupon</h1>
+          <p>Monthly Coupon Management</p>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="nav-btn" data-tab="history">History</button>
+        <button class="nav-btn" data-tab="analytics">Analytics</button>
+      </nav>
+
+      <button class="theme-toggle" id="themeToggle">Dark Mode</button>
+    </aside>
+
+    <section class="main-panel">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">BLNG e-Coupon</p>
+          <h2 id="monthTitle">Current Month</h2>
+        </div>
+
+        <div class="top-actions">
+          <button id="exportCsvBtn">Export Excel</button>
+          <button id="printBtn">PDF Report</button>
+          <button class="danger-btn" id="clearAllBtn">Clear Data</button>
+        </div>
+      </header>
+
+      <section class="tab-content active" id="dashboard">
+        <section class="hero-grid">
+          <article class="ring-card">
+            <div class="ring" id="usageRing">
+              <span id="usagePercent">0%</span>
+            </div>
+            <h3>Monthly Usage</h3>
+            <p id="projectedWaste">Projected waste will appear here.</p>
+          </article>
+
+          <article class="summary-card">
+            <span>Monthly Coupon</span>
+            <strong>$63.00</strong>
+          </article>
+
+          <article class="summary-card">
+            <span>Total Spent</span>
+            <strong id="totalSpent">$0.00</strong>
+          </article>
+
+          <article class="summary-card balance-card">
+            <span>Balance Left</span>
+            <strong id="balanceLeft">$63.00</strong>
+          </article>
+        </section>
+
+        <section class="input-card">
+          <h3>Add Spending</h3>
+
+          <form id="spendingForm">
+            <div class="field">
+              <label for="itemName">Item / Description</label>
+              <input type="text" id="itemName" placeholder="Example: Lunch, drinks, snack" required />
+            </div>
+
+            <div class="field">
+              <label for="category">Category</label>
+              <select id="category" required>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Drinks">Drinks</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="amount">Amount</label>
+              <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required />
+            </div>
+
+            <button type="submit">Add Spending</button>
+          </form>
+        </section>
+
+        <section class="transactions-card">
+          <div class="section-head">
+            <h3>This Month Spending</h3>
+            <input type="search" id="searchInput" placeholder="Search spending..." />
+          </div>
+
+          <div class="transaction-list" id="transactionList"></div>
+        </section>
+      </section>
+
+      <section class="tab-content" id="history">
+        <section class="history-card">
+          <div class="section-head">
+            <h3>Past Months</h3>
+            <span>Spent vs Wasted Balance</span>
+          </div>
+
+          <div class="history-list" id="historyList"></div>
+        </section>
+      </section>
+
+      <section class="tab-content" id="analytics">
+        <section class="chart-grid">
+          <article class="chart-card">
+            <h3>Category Breakdown</h3>
+            <canvas id="pieChart" width="300" height="300"></canvas>
+          </article>
+
+          <article class="chart-card">
+            <h3>Monthly Trend</h3>
+            <canvas id="trendChart" width="600" height="300"></canvas>
+          </article>
+        </section>
+
+        <section class="history-card">
+          <div class="section-head">
+            <h3>Annual Summary</h3>
+            <span id="annualSummary">No data yet</span>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
